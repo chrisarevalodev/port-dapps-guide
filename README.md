@@ -1,4 +1,32 @@
-# Port an Ethereum dApp to Rootstock Guide
+# Guide: Port an Ethereum dApp to Rootstock
+
+## Project Description
+
+This guide will walk you through the steps needed to port your Ethereum dApp to the [Rootstock](https://rootstock.io/) (RSK) blockchain using [Hardhat](https://hardhat.org/). Rootstock is a smart contract platform that leverages the security of the Bitcoin network, allowing you to deploy and manage your Ethereum dApps on a Bitcoin sidechain. By following this guide, you’ll be able to migrate your existing Ethereum smart contracts and tests to Rootstock, configure the necessary network settings, and deploy your contracts on the Rootstock mainnet or testnet.
+
+## Prerequisites
+
+Before you begin, ensure you have the following prerequisites installed and configured:
+
+- [Node.js](https://nodejs.org/en/) (version 14 or higher)
+- npm (version 6 or higher)
+- Hardhat (globally installed)
+- A code editor (e.g., [Visual Studio Code](https://code.visualstudio.com/))
+- [Metamask](https://metamask.io/) Wallet (for managing RSK accounts and obtaining private keys)
+
+Additionally, you should have a basic understanding of Smart Contracts and how to use Hardhat for development and deployment.
+
+## Expected Result
+
+By the end of this guide, you will have:
+
+	1.	Initialized a Hardhat project configured for Rootstock.
+	2.	Installed and configured necessary dependencies.
+	3.	Copied and adjusted your Ethereum smart contract code for Rootstock.
+	4.	Compiled and tested your smart contracts.
+	5.	Deployed your smart contracts to the Rootstock testnet.
+	6.	Verified the successful deployment of your contracts on the Rootstock block explorer.
+
 ## Install [hardhat](https://hardhat.org/) globally
 
 ```bash
@@ -72,7 +100,7 @@ hardhat.config.js
 ```bash
 npm install --save-dev @nomicfoundation/hardhat-ignition-ethers typescript
 ```
-### And import Hardhat Ignition on the `hardhat.config.ts`
+### Import Hardhat Ignition on the `hardhat.config.ts`
 ```ts
 import "@nomicfoundation/hardhat-ignition-ethers";
 ```
@@ -90,7 +118,7 @@ const config: HardhatUserConfig = {
 
 export default config;
 ```
-In order to configure the RSK networks we'll need: an RPC url for both mainnet and testnet and a Private Key of the account that will deploy the contracts. To get the the RPCs go to the [RPC API dashboard](https://dashboard.rpc.rootstock.io/dashboard) from Rootstock Labs, create an account if you don't have one and get an API key for RSK testnet and another for RSK mainnet. 
+In order to configure the RSK networks we'll need: a RPC url for both mainnet and testnet and a Private Key of the account that will deploy the contracts. To get the the RPCs go to the [RPC API dashboard](https://dashboard.rpc.rootstock.io/dashboard) from Rootstock Labs, create an account if you don't have one and get an API key for RSK testnet and another for RSK mainnet. 
 
 The mainnet RPC url should look similar to this:
 ```
@@ -103,7 +131,7 @@ https://rpc.testnet.rootstock.io/<API-KEY>
 And if you don't know how to get the Private Key of your wallet, here's a [tutorial](https://support.metamask.io/managing-my-wallet/secret-recovery-phrase-and-private-keys/how-to-export-an-accounts-private-key/) on how to do it on [Metamask](https://metamask.io/). Also, if you haven't added RSK mainnet or testnet to your Metamask Wallet, you can do it by clicking the **Add Rootstock** or **Add Rootstock Testnet** buttons in the footer of [mainnet explorer](https://rootstock.blockscout.com/) or [testnet explorer](https://rootstock-testnet.blockscout.com/).
 
 ### Store the RPC urls and the PK
-For storing the RPC urls securely you can use a .env file or the [hardhat configuration variables](https://hardhat.org/hardhat-runner/docs/guides/configuration-variables). For this example we'll be using the second one. To store the type this in the terminal of the project's root:
+For storing the RPC urls securely you can use a .env file or the [hardhat configuration variables](https://hardhat.org/hardhat-runner/docs/guides/configuration-variables). For this example we'll be using the second one. To store the mainnet RPC url in a hardhat configuration variable, type this in the terminal of your project's root:
 ```
 npx hardhat vars set MAINNET_RPC_URL
 ```
@@ -115,7 +143,7 @@ npx hardhat vars set PRIVATE_KEY
 ✔ Enter value: *************************************
 ```
 ### Set the configuration
-Now use all the things we've used and stored so your `hardhat.config.ts` looks like this:
+Now use all the things we've set and stored so your `hardhat.config.ts` looks like this:
 ```ts
 import { HardhatUserConfig, vars } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
@@ -146,7 +174,7 @@ const config: HardhatUserConfig = {
 export default config;
 
 ```
-And the configuration is completed, now let's bring the contracts from Ethereum.
+Congratulations! 🎉 You’ve successfully completed all the steps and finished the configuration. Now let's bring the contracts from Ethereum.
 
 ## Copy Ethereum Contract Code and Tests
 We'll copy the contracts from Ethereum and it's tests to our RSK hardhat project. The contract is the following and will be inside `contracts` folder so the route would be `contracts/SimpleStorage.sol`
@@ -237,8 +265,8 @@ SimpleStorage
 
   3 passing (286ms)
 ```
-### Deploy
-The requirement for deploying in mainnet or testnet is having enough balance in the native token. In this example we'll be deploying the contract on testnet.
+### Deployment
+To deploy on mainnet or testnet, you need to have enough balance of the native token. In this example we'll be deploying the contract on testnet.
 
 > [!NOTE]
 > To get testnet tokens for deploying your contract go to the [faucet](https://faucet.rootstock.io/).
@@ -258,7 +286,7 @@ const SimpleStorageModule = buildModule("SimpleStorageModule", (m) => {
 export default SimpleStorageModule;
 ```
 
-This is a script of typescript that uses hardhat ignition to deploy the `SimpleStorage` contract in a declarative way. After you paste that code and save the changes, type this in your terminal tto deploy the contract:
+This Typescript script uses hardhat ignition to deploy the `SimpleStorage` contract in a declarative way. After you paste that code and save the changes, type this in your terminal to deploy the contract:
 
 ```
 npx hardhat ignition deploy ignition/modules/SimpleStorage.ts --network rskTestnet
@@ -284,7 +312,7 @@ SimpleStorageModule#SimpleStorage - 0x3570c42943697702bA582B1ae3093A15D8bc2115
 > [!TIP]
 > If you get an error like `IgnitionError: IGN401` try running the command again.
 
-If you want to deploy your contract on mainnet change `rskTestnet` to `rskMainnet` in the last command we ran and make sure you have [RBTC](https://dev.rootstock.io/rsk/rbtc/) available on your wallet.
+If you want to deploy your contract on mainnet change `rskTestnet` with `rskMainnet` in the last command we ran and make sure you have [RBTC](https://dev.rootstock.io/rsk/rbtc/) available on your wallet.
 
 ## Congrats! You deployed your contract on Rootstock!
 Now go to [https://explorer.testnet.rootstock.io/](https://explorer.testnet.rootstock.io/) and paste your contract address in the search bar to verify the deployment was successful. If you deployed your contract on mainnet look in [https://explorer.rootstock.io/](https://explorer.rootstock.io/)
